@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Shooting Game</title>
+  <title>Happy Birthday Riddhiman</title>
   <style>
     html, body {
       margin: 0;
@@ -38,24 +38,6 @@
 
     .timer { right: 30px; }
     .score { left: 30px; }
-
-    @media screen and (orientation: portrait) {
-      body::before {
-        content: "Please rotate your device";
-        position: absolute;
-        color: white;
-        font-size: 24px;
-        top: 40%;
-        width: 100%;
-        text-align: center;
-        background: rgba(0,0,0,0.8);
-        padding: 20px;
-      }
-
-      canvas, .timer, .score {
-        display: none;
-      }
-    }
   </style>
 </head>
 <body>
@@ -97,7 +79,7 @@
         mouseY <= target.y + target.size
       ) {
         score++;
-        scoreEl.innerText = "Score: " + score;
+        scoreEl.textContent = "Score: " + score;
         target.x = Math.random() * 700 + 50;
         target.y = Math.random() * 300 + 50;
       }
@@ -113,7 +95,8 @@
 
     const countdown = setInterval(() => {
       timeLeft--;
-      timerEl.innerText = "Time: " + timeLeft;
+      timerEl.textContent = "Time: " + timeLeft;
+
       if (timeLeft <= 0) {
         clearInterval(countdown);
         alert("Time's up! Score: " + score);
