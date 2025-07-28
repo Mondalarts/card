@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Credits</title>
+  <style>
+    body {
+      margin: 0;
+      background: linear-gradient(to bottom, #111, #1a1a1a);
+      color: #00ffcc;
+      font-family: 'Courier New', monospace;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .credits-container {
+      text-align: center;
+      width: 100%;
+      max-width: 600px;
+      height: 100vh;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .credits {
+      position: absolute;
+      width: 100%;
+      animation: scrollUp 30s linear infinite;
+    }
+
+    @keyframes scrollUp {
+      0% { top: 100%; }
+      100% { top: -100%; }
+    }
+
+    h1 {
+      font-size: 36px;
+      margin-bottom: 40px;
+      color: #00ffd5;
+    }
+
+    p {
+      font-size: 20px;
+      margin: 20px 0;
+      color: #fff;
+    }
+
+    .emoji {
+      font-size: 28px;
+    }
+  </style>
+</head>
+<body>
+  <div class="credits-container">
+    <div class="credits">
+      <h1>🎉 Credits 🎉</h1>
+      <p>Created for: <strong>Riddhiman's Birthday</strong></p>
+      <p>Project Lead: Lord Angshu</p>
+      <p>Code & Design: angshu 👨‍💻</p>
+      <p>Story Writer: angshu ☀️</p>
+      <p>Music & FX: no one 🌙</p>
+      <p>Tester 1: ai 🎮</p>
+      <p>Tester 2: anistain💡</p>
+      <p class="emoji">🗿🗿🗿🗿🗿🗿🗿🗿</p>
+      <p>Special Thanks: Smriti 💖</p>
+      <p>Powered by: HTML + JavaScript + Love 💻💘</p>
+      <p>Copyright © 2025</p>
+    </div>
+  </div>
+</body>
+</html>

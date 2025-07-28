@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Tic Tac Toe vs Bot</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      font-family: Arial, sans-serif;
+      background: #111;
+      color: white;
+      height: 100vh;
+      width: 100vw;
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .game-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    #board {
+      display: grid;
+      grid-template-columns: repeat(3, 100px);
+      grid-template-rows: repeat(3, 100px);
+      gap: 0;
+      border: 4px solid #00ffcc;
+    }
+
+    .cell {
+      width: 100px;
+      height: 100px;
+      background-color: #222;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 48px;
+      cursor: pointer;
+      border: 2px solid #00ffcc;
+      box-sizing: border-box;
+      transition: background-color 0.2s ease;
+    }
+
+    .cell:hover {
+      background-color: #333;
+    }
+
+    .status, .timer {
+      font-size: 20px;
+      margin: 10px;
+      text-align: center;
+    }
+
+    @media screen and (orientation: portrait) {
+      body::before {
+        content: "Please rotate your device to play!";
+        position: absolute;
+        color: white;
+        font-size: 24px;
+        top: 40%;
+        width: 100%;
+        text-align: center;
+        background: rgba(0,0,0,0.8);
+        padding: 20px;
+        z-index: 10;
+      }
+
+      .game-container, #board {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="game-container">
+    <div id="board"></div>
+    <div class="status" id="status">Round 1: Your turn</div>
+    <div class="timer" id="timer">Time left: 15</div>
+  </div>
+
+  <script>
+    const board = document.getElementById("board");
+    const status = document.getElementById("status");
+    const timerEl = document.getElementById("timer");
+    let cells = [];
+    let currentPlayer = "X";
+    let botPlayer = "O";
+    let round = 1;
+    let wins = 0;
+    let interval;
+    let timeLeft = 15;
+
+    function createBoard() {
+      board.innerHTML = "";
+      cells = [];
+      for (let i = 0; i < 9; i++) {
+        const cell = document.createElement("div");
+        cell.classList.add("cell");
+        cell.dataset.index = i;
+        cell.addEventListener("click", handleClick);
+        board.appendChild(cell);
+        cells.push(cell);
+      }
+      startTimer();
+    }
+
+    function handleClick(e) {
+      const cell = e.target;
+      if (cell.textContent !== "") return;
+      cell.textContent = currentPlayer;
+
+      if (checkWinner(currentPlayer)) {
+        wins++;
+        status.textContent = `✅ You won Round ${round}!`;
+        clearInterval(interval);
+        setTimeout(() => {
+          if (wins === 2) {
+            alert("🎉 You won 2 rounds! Moving to next game.");
+            window.location.href = "game3.html";
+          } else {
+            round++;
+            resetRound();
+          }
+        }, 1000);
+        return;
+      }
+
+      if (isDraw()) {
+        status.textContent = "🤝 Draw!";
+        clearInterval(interval);
+        setTimeout(() => {
+          round++;
+          resetRound();
+        }, 1000);
+        return;
+      }
+
+      botMove();
+    }
+
+    function botMove() {
+      let emptyCells = cells.filter(c => c.textContent === "");
+      if (emptyCells.length === 0) return;
+
+      const randomCell = emptyCells[Math.floor(Math.random() * emptyCells.length)];
+      randomCell.textContent = botPlayer;
+
+      if (checkWinner(botPlayer)) {
+        status.textContent = `💀 Bot won Round ${round}`;
+        clearInterval(interval);
+        setTimeout(() => {
+          round++;
+          resetRound();
+        }, 1000);
+      } else if (isDraw()) {
+        status.textContent = "🤝 Draw!";
+        clearInterval(interval);
+        setTimeout(() => {
+          round++;
+          resetRound();
+        }, 1000);
+      }
+    }
+
+    function isDraw() {
+      return cells.every(cell => cell.textContent !== "");
+    }
+
+    function checkWinner(player) {
+      const combos = [
+        [0,1,2],[3,4,5],[6,7,8],
+        [0,3,6],[1,4,7],[2,5,8],
+        [0,4,8],[2,4,6]
+      ];
+      return combos.some(combo =>
+        combo.every(i => cells[i].textContent === player)
+      );
+    }
+
+    function resetRound() {
+      status.textContent = `Round ${round}: Your turn`;
+      timeLeft = 15;
+      createBoard();
+    }
+
+    function startTimer() {
+      clearInterval(interval);
+      interval = setInterval(() => {
+        timeLeft--;
+        timerEl.textContent = `Time left: ${timeLeft}`;
+        if (timeLeft <= 0) {
+          clearInterval(interval);
+          status.textContent = "⏰ Time's up! You lost this round.";
+          round++;
+          setTimeout(resetRound, 1000);
+        }
+      }, 1000);
+    }
+
+    createBoard();
+  </script>
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Happy Birthday Riddhiman</title>
+  <style>
+    body {
+      background: linear-gradient(to right, #ffeaa7, #fab1a0);
+      overflow: hidden;
+      margin: 0;
+      font-family: Arial;
+      text-align: center;
+    }
+
+    h1 {
+      margin-top: 60px;
+      font-size: 40px;
+      color: #2d3436;
+      animation: float 2s ease-in-out infinite alternate;
+    }
+
+    .emoji {
+      position: absolute;
+      font-size: 40px;
+      animation: float-emoji 6s linear infinite;
+    }
+
+    @keyframes float-emoji {
+      0% {
+        transform: translateY(100vh) translateX(0);
+        opacity: 0;
+      }
+      100% {
+        transform: translateY(-10vh) translateX(50px);
+        opacity: 1;
+      }
+    }
+
+    .btn {
+      margin-top: 100px;
+      padding: 20px 40px;
+      font-size: 20px;
+      background-color: #6c5ce7;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+    }
+
+    .btn:hover {
+      background-color: #a29bfe;
+    }
+  </style>
+</head>
+<body>
+  <h1>🎉 Happy Birthday Riddhiman 🎉</h1>
+  <button class="btn" onclick="startGame()">Start Game</button>
+
+  <script>
+    function floatEmoji() {
+      for (let i = 0; i < 30; i++) {
+        const emoji = document.createElement("div");
+        emoji.className = "emoji";
+        emoji.style.left = Math.random() * 100 + "vw";
+        emoji.style.top = Math.random() * 100 + "vh";
+        emoji.textContent = "🗿";
+        emoji.style.animationDuration = (Math.random() * 3 + 4) + "s";
+        document.body.appendChild(emoji);
+      }
+    }
+
+    function startGame() {
+      window.location.href = "game1.html";
+    }
+
+    floatEmoji();
+  </script>
+</body>
+</html>
