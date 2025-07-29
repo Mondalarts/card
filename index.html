@@ -2,75 +2,26 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title> Riddhiman, Happy Birthday 🎉</title>
+  <title>Happy Birthday Riddhiman</title>
   <style>
     body {
-      background: linear-gradient(to right, #74ebd5, #9face6);
+      background: linear-gradient(to right, #ffeaa7, #fab1a0);
+      overflow: hidden;
       margin: 0;
-      font-family: Arial, sans-serif;
+      font-family: Arial;
       text-align: center;
-      color: #2d3436;
-      overflow-x: hidden;
     }
 
     h1 {
-      margin-top: 40px;
-      font-size: 42px;
-      animation: float 2s ease-in-out infinite alternate;
-    }
-
-    @keyframes float {
-      0% { transform: translateY(0px); }
-      100% { transform: translateY(-10px); }
-    }
-
-    .btn {
-      margin-top: 20px;
-      padding: 15px 40px;
-      font-size: 20px;
-      background-color: #6c5ce7;
-      color: white;
-      border: none;
-      border-radius: 12px;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-
-    .btn:hover {
-      background-color: #a29bfe;
-    }
-
-    .game-links {
-      margin-top: 40px;
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-      flex-wrap: wrap;
-    }
-
-    .game-card {
-      background: white;
-      padding: 20px;
-      width: 200px;
-      border-radius: 12px;
-      box-shadow: 0px 4px 10px rgba(0,0,0,0.2);
-      transition: 0.3s;
-    }
-
-    .game-card:hover {
-      transform: scale(1.05);
-    }
-
-    .game-card a {
-      text-decoration: none;
+      margin-top: 60px;
+      font-size: 40px;
       color: #2d3436;
-      font-weight: bold;
-      font-size: 18px;
+      animation: float 2s ease-in-out infinite alternate;
     }
 
     .emoji {
       position: absolute;
-      font-size: 32px;
+      font-size: 40px;
       animation: float-emoji 6s linear infinite;
     }
 
@@ -84,35 +35,42 @@
         opacity: 1;
       }
     }
+
+    .btn {
+      margin-top: 100px;
+      padding: 20px 40px;
+      font-size: 20px;
+      background-color: #6c5ce7;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+    }
+
+    .btn:hover {
+      background-color: #a29bfe;
+    }
   </style>
 </head>
 <body>
-  <h1>🎂 Riddhiman, Happy Birthday 🎉 <br> PLAY ALL GAMES ONE BY ONE 😁</h1>
- 
-  <button class="btn" onclick="startGame()">▶ Start Game</button>
-
-  <div class="game-links">
-    <div class="game-card"><a href="game1.html">🎯 Shooting Game</a></div>
-    <div class="game-card"><a href="game2.html">❌⭕ Tic Tac Toe</a></div>
-    <div class="game-card"><a href="game3.html">🃏 Memory Flip</a></div>
-  </div>
+  <h1>🎉 Happy Birthday Riddhiman 🎉</h1>
+  <button class="btn" onclick="startGame()">Start Game</button>
 
   <script>
     function floatEmoji() {
-      const emojis = ["🎮","🔥","⭐","🎉","🕹️","💎","🚀"];
-      for (let i = 0; i < 25; i++) {
+      for (let i = 0; i < 30; i++) {
         const emoji = document.createElement("div");
         emoji.className = "emoji";
         emoji.style.left = Math.random() * 100 + "vw";
         emoji.style.top = Math.random() * 100 + "vh";
-        emoji.textContent = emojis[Math.floor(Math.random()*emojis.length)];
+        emoji.textContent = "🗿";
         emoji.style.animationDuration = (Math.random() * 3 + 4) + "s";
         document.body.appendChild(emoji);
       }
     }
 
     function startGame() {
-      window.location.href = "game1.html";
+      window.location.href = "game2.html"; // ✅ Directly opens game2.html
     }
 
     floatEmoji();
