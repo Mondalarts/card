@@ -4,85 +4,62 @@
   <meta charset="UTF-8">
   <title>Tic Tac Toe vs Bot</title>
   <style>
-    html, body {
+    body {
       margin: 0;
       padding: 0;
-      overflow: hidden;
+      background: radial-gradient(circle at center, #1a1a1a, #000000);
       font-family: Arial, sans-serif;
-      background: #111;
-      color: white;
-      height: 100vh;
-      width: 100vw;
-      display: flex;
-      flex-direction: row;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .game-container {
       display: flex;
       flex-direction: column;
+      justify-content: center;
       align-items: center;
+      height: 100vh;
     }
 
     #board {
       display: grid;
-      grid-template-columns: repeat(3, 100px);
-      grid-template-rows: repeat(3, 100px);
-      gap: 0;
-      border: 4px solid #00ffcc;
+      grid-template-columns: repeat(3, 120px);
+      grid-template-rows: repeat(3, 120px);
+      gap: 10px;
     }
 
     .cell {
-      width: 100px;
-      height: 100px;
-      background-color: #222;
+      width: 120px;
+      height: 120px;
+      background: rgba(255,255,255,0.08);
+      border: 2px solid rgba(255,255,255,0.3);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 48px;
+      font-size: 60px;
+      font-weight: bold;
       cursor: pointer;
-      border: 2px solid #00ffcc;
-      box-sizing: border-box;
-      transition: background-color 0.2s ease;
+      border-radius: 20px;
+      transition: 0.3s;
     }
 
     .cell:hover {
-      background-color: #333;
+      transform: scale(1.05);
+      background: rgba(255,255,255,0.15);
     }
+
+    .cell.red { color: #ff3b30; text-shadow: 0 0 12px #ff3b30; }
+    .cell.blue { color: #0a84ff; text-shadow: 0 0 12px #0a84ff; }
 
     .status, .timer {
-      font-size: 20px;
-      margin: 10px;
+      font-size: 22px;
+      font-weight: bold;
+      margin-top: 20px;
       text-align: center;
-    }
-
-    @media screen and (orientation: portrait) {
-      body::before {
-        content: "Please rotate your device to play!";
-        position: absolute;
-        color: white;
-        font-size: 24px;
-        top: 40%;
-        width: 100%;
-        text-align: center;
-        background: rgba(0,0,0,0.8);
-        padding: 20px;
-        z-index: 10;
-      }
-
-      .game-container, #board {
-        display: none;
-      }
+      color: #fff;
+      text-shadow: 0 0 8px rgba(255,255,255,0.3);
     }
   </style>
 </head>
 <body>
-  <div class="game-container">
-    <div id="board"></div>
-    <div class="status" id="status">Round 1: Your turn</div>
-    <div class="timer" id="timer">Time left: 15</div>
-  </div>
+  <div id="board"></div>
+  <div class="status" id="status">Round 1: Your turn</div>
+  <div class="timer" id="timer">Time left: 15</div>
 
   <script>
     const board = document.getElementById("board");
@@ -95,6 +72,12 @@
     let wins = 0;
     let interval;
     let timeLeft = 15;
+
+    const combos = [
+      [0,1,2],[3,4,5],[6,7,8],
+      [0,3,6],[1,4,7],[2,5,8],
+      [0,4,8],[2,4,6]
+    ];
 
     function createBoard() {
       board.innerHTML = "";
@@ -114,6 +97,7 @@
       const cell = e.target;
       if (cell.textContent !== "") return;
       cell.textContent = currentPlayer;
+      cell.classList.add(currentPlayer === "X" ? "red" : "blue");
 
       if (checkWinner(currentPlayer)) {
         wins++;
@@ -145,11 +129,51 @@
     }
 
     function botMove() {
-      let emptyCells = cells.filter(c => c.textContent === "");
-      if (emptyCells.length === 0) return;
+      // 1️⃣ Bot tries to win
+      for (let combo of combos) {
+        const [a,b,c] = combo;
+        const line = [cells[a], cells[b], cells[c]];
+        if (line.filter(c => c.textContent === botPlayer).length === 2 &&
+            line.filter(c => c.textContent === "").length === 1) {
+          makeBotMove(line.find(c => c.textContent === ""));
+          return;
+        }
+      }
 
-      const randomCell = emptyCells[Math.floor(Math.random() * emptyCells.length)];
-      randomCell.textContent = botPlayer;
+      // 2️⃣ Bot blocks player's win
+      for (let combo of combos) {
+        const [a,b,c] = combo;
+        const line = [cells[a], cells[b], cells[c]];
+        if (line.filter(c => c.textContent === currentPlayer).length === 2 &&
+            line.filter(c => c.textContent === "").length === 1) {
+          makeBotMove(line.find(c => c.textContent === ""));
+          return;
+        }
+      }
+
+      // 3️⃣ Take center
+      if (cells[4].textContent === "") {
+        makeBotMove(cells[4]);
+        return;
+      }
+
+      // 4️⃣ Take a corner
+      const corners = [0,2,6,8].filter(i => cells[i].textContent === "");
+      if (corners.length > 0) {
+        makeBotMove(cells[corners[Math.floor(Math.random()*corners.length)]]);
+        return;
+      }
+
+      // 5️⃣ Random move
+      let emptyCells = cells.filter(c => c.textContent === "");
+      if (emptyCells.length > 0) {
+        makeBotMove(emptyCells[Math.floor(Math.random()*emptyCells.length)]);
+      }
+    }
+
+    function makeBotMove(cell) {
+      cell.textContent = botPlayer;
+      cell.classList.add(botPlayer === "X" ? "red" : "blue");
 
       if (checkWinner(botPlayer)) {
         status.textContent = `💀 Bot won Round ${round}`;
@@ -173,14 +197,7 @@
     }
 
     function checkWinner(player) {
-      const combos = [
-        [0,1,2],[3,4,5],[6,7,8],
-        [0,3,6],[1,4,7],[2,5,8],
-        [0,4,8],[2,4,6]
-      ];
-      return combos.some(combo =>
-        combo.every(i => cells[i].textContent === player)
-      );
+      return combos.some(combo => combo.every(i => cells[i].textContent === player));
     }
 
     function resetRound() {
