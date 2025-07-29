@@ -2,19 +2,19 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Memory Flip Game</title>
   <style>
     body {
-      font-family: 'Arial', sans-serif;
+      font-family: Arial, sans-serif;
       background: #141414;
       color: #fff;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: start;
-      height: 100vh;
-      margin: 0;
       padding-top: 20px;
+      margin: 0;
+      height: 100vh;
     }
 
     h1 {
@@ -23,30 +23,35 @@
 
     #timer {
       font-size: 20px;
-      margin-bottom: 20px;
+      margin-bottom: 15px;
     }
 
     #game-board {
       display: grid;
-      grid-template-columns: repeat(5, 80px);
-      grid-gap: 10px;
+      grid-template-columns: repeat(5, minmax(50px, 18vw));
+      gap: 10px;
+      justify-content: center;
     }
 
     .card {
-      width: 80px;
-      height: 80px;
-      font-size: 32px;
+      width: 18vw;
+      height: 18vw;
+      max-width: 80px;
+      max-height: 80px;
       background-color: #2c2c2c;
+      border-radius: 10px;
       display: flex;
       align-items: center;
       justify-content: center;
+      font-size: 8vw;
       cursor: pointer;
-      border-radius: 10px;
-      transition: background-color 0.3s;
+      perspective: 1000px;
+      transition: transform 0.4s;
     }
 
     .card.flipped {
       background-color: #ffffff22;
+      transform: rotateY(180deg);
     }
 
     .card.matched {
@@ -56,8 +61,9 @@
     }
 
     #message {
-      margin-top: 20px;
-      font-size: 24px;
+      margin-top: 15px;
+      font-size: 22px;
+      text-align: center;
     }
   </style>
 </head>
@@ -70,15 +76,16 @@
   <script>
     const emojis = ['🍕', '🐱', '🌈', '🚀', '💎', '🎈', '🐸', '🍩', '⚽', '🦄', '🎮', '🍭'];
     const tripletEmoji = '💡';
-    let deck = [...emojis, ...emojis, tripletEmoji]; // 12x2 + 1 = 25
+    let deck = [...emojis, ...emojis, tripletEmoji];
 
-    deck = deck.sort(() => 0.5 - Math.random());
+    deck.sort(() => Math.random() - 0.5);
 
     const board = document.getElementById('game-board');
-    let flippedCards = [];
-    let matched = 0;
     const message = document.getElementById('message');
     const timerDisplay = document.getElementById('timer');
+
+    let flippedCards = [];
+    let matched = 0;
     let timeLeft = 120;
     let timerInterval;
 
@@ -86,7 +93,6 @@
       timerInterval = setInterval(() => {
         timeLeft--;
         timerDisplay.textContent = `⏱️ Time Left: ${timeLeft}s`;
-
         if (timeLeft <= 0) {
           clearInterval(timerInterval);
           endGame(false);
@@ -95,39 +101,35 @@
     }
 
     function createBoard() {
-      for (let i = 0; i < 25; i++) {
+      board.innerHTML = "";
+      deck.forEach((emoji, index) => {
         const card = document.createElement('div');
         card.classList.add('card');
-        card.dataset.emoji = deck[i];
-        card.dataset.index = i;
+        card.dataset.emoji = emoji;
+        card.dataset.index = index;
         card.addEventListener('click', handleCardClick);
         board.appendChild(card);
-      }
+      });
     }
 
     function handleCardClick(e) {
       const card = e.target;
-      if (
-        card.classList.contains('flipped') ||
-        card.classList.contains('matched') ||
-        flippedCards.length >= 2
-      ) return;
+      if (card.classList.contains('flipped') || card.classList.contains('matched') || flippedCards.length >= 2) return;
 
       card.classList.add('flipped');
       card.textContent = card.dataset.emoji;
       flippedCards.push(card);
 
       if (flippedCards.length === 2) {
-        setTimeout(checkMatch, 800);
+        setTimeout(checkMatch, 700);
       }
     }
 
     function checkMatch() {
-      const [card1, card2] = flippedCards;
-
-      if (card1.dataset.emoji === card2.dataset.emoji) {
-        card1.classList.add('matched');
-        card2.classList.add('matched');
+      const [c1, c2] = flippedCards;
+      if (c1.dataset.emoji === c2.dataset.emoji) {
+        c1.classList.add('matched');
+        c2.classList.add('matched');
         matched += 2;
 
         if (matched >= 24) {
@@ -141,17 +143,21 @@
           endGame(true);
         }
       } else {
-        card1.classList.remove('flipped');
-        card2.classList.remove('flipped');
-        card1.textContent = '';
-        card2.textContent = '';
+        c1.classList.remove('flipped');
+        c2.classList.remove('flipped');
+        c1.textContent = "";
+        c2.textContent = "";
       }
-
       flippedCards = [];
     }
 
     function endGame(won) {
-      message.textContent = won ? '🎉 You matched all cards!' : '⏱️ Time’s up! Try again.';
+      if (won) {
+        const iq = Math.floor(Math.random() * 40) + 110; // 110–150
+        message.textContent = `🎉 You matched all cards! 🎯 Your IQ is ${iq}`;
+      } else {
+        message.textContent = "⏱️ Time’s up! Try again.";
+      }
     }
 
     createBoard();
