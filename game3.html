@@ -2,7 +2,6 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <!-- ✅ Disable zoom on mobile -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Memory Flip Game</title>
   <style>
@@ -18,23 +17,14 @@
       height: 100vh;
       overflow-x: hidden;
     }
-
-    h1 {
-      margin-bottom: 10px;
-    }
-
-    #timer {
-      font-size: 20px;
-      margin-bottom: 15px;
-    }
-
+    h1 { margin-bottom: 10px; }
+    #timer { font-size: 20px; margin-bottom: 15px; }
     #game-board {
       display: grid;
       grid-template-columns: repeat(5, minmax(50px, 18vw));
       gap: 10px;
       justify-content: center;
     }
-
     .card {
       width: 18vw;
       height: 18vw;
@@ -50,30 +40,29 @@
       perspective: 1000px;
       transition: transform 0.4s;
     }
-
-    .card.flipped {
-      background-color: #ffffff22;
-      transform: rotateY(180deg);
-    }
-
-    .card.matched {
-      background-color: #00c853;
-      color: #000;
-      cursor: default;
-    }
-
-    #message {
+    .card.flipped { background-color: #ffffff22; transform: rotateY(180deg); }
+    .card.matched { background-color: #00c853; color: #000; cursor: default; }
+    #message { margin-top: 15px; font-size: 22px; text-align: center; }
+    #retry-btn {
+      display: none;
       margin-top: 15px;
-      font-size: 22px;
-      text-align: center;
+      padding: 10px 20px;
+      font-size: 18px;
+      background: #00c853;
+      color: #000;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
     }
+    #retry-btn:hover { background: #00e676; }
   </style>
 </head>
 <body>
   <h1>🎮 Memory Flip Game</h1>
-  <div id="timer">⏱️ Time Left: 120s</div>
+  <div id="timer">⏱️ Time Left: 300s</div>
   <div id="game-board"></div>
   <div id="message"></div>
+  <button id="retry-btn" onclick="restartGame()">🔄 Retry</button>
 
   <script>
     const emojis = ['🍕','🐱','🌈','🚀','💎','🎈','🐸','🍩','⚽','🦄','🎮','🍭'];
@@ -83,11 +72,13 @@
     const board = document.getElementById('game-board');
     const message = document.getElementById('message');
     const timerDisplay = document.getElementById('timer');
+    const retryBtn = document.getElementById('retry-btn');
 
     let flippedCards = [];
     let matched = 0;
-    let timeLeft = 120;
+    let timeLeft = 300;
     let timerInterval;
+    let gameEnded = false;
 
     function startTimer() {
       timerInterval = setInterval(() => {
@@ -113,6 +104,7 @@
     }
 
     function handleCardClick(e) {
+      if (gameEnded) return;
       const card = e.target;
       if (card.classList.contains('flipped') || card.classList.contains('matched') || flippedCards.length >= 2) return;
 
@@ -152,12 +144,35 @@
     }
 
     function endGame(won) {
+      gameEnded = true;
+      retryBtn.style.display = "inline-block";
+
       if (won) {
         const iq = Math.floor(Math.random() * 40) + 110;
         message.textContent = `🎉 You matched all cards! 🎯 Your IQ is ${iq}`;
+
+        // ✅ Only redirect if Tic Tac Toe was also won
+        if (localStorage.getItem("tictactoeWon") === "true") {
+          setTimeout(() => {
+            localStorage.removeItem("tictactoeWon"); // clear progress
+            window.location.href = "credit.html"; // go to credits
+          }, 3000);
+        }
       } else {
         message.textContent = "⏱️ Time’s up! Try again.";
       }
+    }
+
+    function restartGame() {
+      deck.sort(() => Math.random() - 0.5);
+      matched = 0;
+      timeLeft = 300;
+      message.textContent = "";
+      retryBtn.style.display = "none";
+      gameEnded = false;
+      clearInterval(timerInterval);
+      createBoard();
+      startTimer();
     }
 
     createBoard();
