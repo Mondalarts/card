@@ -2,26 +2,32 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- ✅ Important for mobile -->
   <title>Happy Birthday Riddhiman</title>
   <style>
     body {
       background: linear-gradient(to right, #ffeaa7, #fab1a0);
       overflow: hidden;
       margin: 0;
-      font-family: Arial;
+      font-family: Arial, sans-serif;
       text-align: center;
     }
 
     h1 {
-      margin-top: 60px;
-      font-size: 40px;
+      margin-top: 50px;
+      font-size: 8vw; /* ✅ Scales with screen width */
       color: #2d3436;
       animation: float 2s ease-in-out infinite alternate;
     }
 
+    @keyframes float {
+      0% { transform: translateY(0px); }
+      100% { transform: translateY(-10px); }
+    }
+
     .emoji {
       position: absolute;
-      font-size: 40px;
+      font-size: 32px;
       animation: float-emoji 6s linear infinite;
     }
 
@@ -37,9 +43,9 @@
     }
 
     .btn {
-      margin-top: 100px;
-      padding: 20px 40px;
-      font-size: 20px;
+      margin-top: 50px;
+      padding: 15px 30px;
+      font-size: 5vw; /* ✅ Responsive button text */
       background-color: #6c5ce7;
       color: white;
       border: none;
@@ -50,6 +56,11 @@
     .btn:hover {
       background-color: #a29bfe;
     }
+
+    @media (max-width: 480px) {
+      h1 { font-size: 9vw; }
+      .btn { font-size: 6vw; padding: 12px 24px; }
+    }
   </style>
 </head>
 <body>
@@ -58,19 +69,19 @@
 
   <script>
     function floatEmoji() {
-      for (let i = 0; i < 30; i++) {
+      for (let i = 0; i < 25; i++) {
         const emoji = document.createElement("div");
         emoji.className = "emoji";
         emoji.style.left = Math.random() * 100 + "vw";
         emoji.style.top = Math.random() * 100 + "vh";
-        emoji.textContent = "🗿";
+        emoji.textContent = "🎉";
         emoji.style.animationDuration = (Math.random() * 3 + 4) + "s";
         document.body.appendChild(emoji);
       }
     }
 
     function startGame() {
-      window.location.href = "game2.html"; // ✅ Directly opens game2.html
+      window.location.href = "game2.html";
     }
 
     floatEmoji();
