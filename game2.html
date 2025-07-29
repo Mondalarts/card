@@ -2,10 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
-  />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Tic Tac Toe vs Bot</title>
   <style>
     body {
@@ -19,7 +16,6 @@
       align-items: center;
       height: 100vh;
     }
-
     #board {
       display: grid;
       grid-template-columns: repeat(3, 25vw);
@@ -27,7 +23,6 @@
       gap: 3vw;
       max-width: 300px;
     }
-
     .cell {
       background: rgba(255, 255, 255, 0.08);
       border: 2px solid rgba(255, 255, 255, 0.3);
@@ -40,30 +35,14 @@
       border-radius: 12px;
       transition: 0.3s;
     }
-
-    .cell:hover {
-      transform: scale(1.05);
-      background: rgba(255, 255, 255, 0.15);
-    }
-
-    .cell.red {
-      color: #ff3b30;
-      text-shadow: 0 0 12px #ff3b30;
-    }
-
-    .cell.blue {
-      color: #0a84ff;
-      text-shadow: 0 0 12px #0a84ff;
-    }
-
-    .status,
-    .timer {
+    .cell.red { color: #ff3b30; text-shadow: 0 0 12px #ff3b30; }
+    .cell.blue { color: #0a84ff; text-shadow: 0 0 12px #0a84ff; }
+    .status, .timer {
       font-size: 20px;
       font-weight: bold;
       margin-top: 20px;
       text-align: center;
       color: #fff;
-      text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
     }
   </style>
 </head>
@@ -85,14 +64,9 @@
     let timeLeft = 15;
 
     const combos = [
-      [0, 1, 2],
-      [3, 4, 5],
-      [6, 7, 8],
-      [0, 3, 6],
-      [1, 4, 7],
-      [2, 5, 8],
-      [0, 4, 8],
-      [2, 4, 6],
+      [0,1,2],[3,4,5],[6,7,8],
+      [0,3,6],[1,4,7],[2,5,8],
+      [0,4,8],[2,4,6]
     ];
 
     function createBoard() {
@@ -121,9 +95,10 @@
         clearInterval(interval);
         setTimeout(() => {
           if (wins === 2) {
+            localStorage.setItem("tictactoeWon", "true"); // ✅ Save win
             const iq = Math.floor(Math.random() * 40) + 120;
             alert(`🎉 You won 2 rounds! Your IQ is ${iq}`);
-            window.location.href = "game3.html";
+            window.location.href = "game3.html"; // Go to next game
           } else {
             round++;
             resetRound();
@@ -135,10 +110,7 @@
       if (isDraw()) {
         status.textContent = "🤝 Draw!";
         clearInterval(interval);
-        setTimeout(() => {
-          round++;
-          resetRound();
-        }, 1000);
+        setTimeout(() => { round++; resetRound(); }, 1000);
         return;
       }
 
@@ -147,85 +119,60 @@
 
     function botMove() {
       for (let combo of combos) {
-        const [a, b, c] = combo;
+        const [a,b,c] = combo;
         const line = [cells[a], cells[b], cells[c]];
-        if (
-          line.filter((c) => c.textContent === botPlayer).length === 2 &&
-          line.filter((c) => c.textContent === "").length === 1
-        ) {
-          makeBotMove(line.find((c) => c.textContent === ""));
+        if (line.filter(c => c.textContent === botPlayer).length === 2 &&
+            line.filter(c => c.textContent === "").length === 1) {
+          makeBotMove(line.find(c => c.textContent === ""));
           return;
         }
       }
-
       for (let combo of combos) {
-        const [a, b, c] = combo;
+        const [a,b,c] = combo;
         const line = [cells[a], cells[b], cells[c]];
-        if (
-          line.filter((c) => c.textContent === currentPlayer).length === 2 &&
-          line.filter((c) => c.textContent === "").length === 1
-        ) {
-          makeBotMove(line.find((c) => c.textContent === ""));
+        if (line.filter(c => c.textContent === currentPlayer).length === 2 &&
+            line.filter(c => c.textContent === "").length === 1) {
+          makeBotMove(line.find(c => c.textContent === ""));
           return;
         }
       }
-
-      if (cells[4].textContent === "") {
-        makeBotMove(cells[4]);
-        return;
-      }
-
-      const corners = [0, 2, 6, 8].filter((i) => cells[i].textContent === "");
+      if (cells[4].textContent === "") { makeBotMove(cells[4]); return; }
+      const corners = [0,2,6,8].filter(i => cells[i].textContent === "");
       if (corners.length > 0) {
-        makeBotMove(cells[corners[Math.floor(Math.random() * corners.length)]]);
+        makeBotMove(cells[corners[Math.floor(Math.random()*corners.length)]]);
         return;
       }
-
-      let emptyCells = cells.filter((c) => c.textContent === "");
+      let emptyCells = cells.filter(c => c.textContent === "");
       if (emptyCells.length > 0) {
-        makeBotMove(
-          emptyCells[Math.floor(Math.random() * emptyCells.length)]
-        );
+        makeBotMove(emptyCells[Math.floor(Math.random()*emptyCells.length)]);
       }
     }
 
     function makeBotMove(cell) {
       cell.textContent = botPlayer;
       cell.classList.add(botPlayer === "X" ? "red" : "blue");
-
       if (checkWinner(botPlayer)) {
         status.textContent = `💀 Bot won Round ${round}`;
         clearInterval(interval);
-        setTimeout(() => {
-          round++;
-          resetRound();
-        }, 1000);
+        setTimeout(() => { round++; resetRound(); }, 1000);
       } else if (isDraw()) {
         status.textContent = "🤝 Draw!";
         clearInterval(interval);
-        setTimeout(() => {
-          round++;
-          resetRound();
-        }, 1000);
+        setTimeout(() => { round++; resetRound(); }, 1000);
       }
     }
 
     function isDraw() {
-      return cells.every((cell) => cell.textContent !== "");
+      return cells.every(cell => cell.textContent !== "");
     }
-
     function checkWinner(player) {
-      return combos.some((combo) =>
-        combo.every((i) => cells[i].textContent === player)
-      );
+      return combos.some(combo => combo.every(i => cells[i].textContent === player));
     }
-
     function resetRound() {
       status.textContent = `Round ${round}: Your turn`;
       timeLeft = 15;
       createBoard();
     }
-
     function startTimer() {
       clearInterval(interval);
       interval = setInterval(() => {
@@ -239,7 +186,6 @@
         }
       }, 1000);
     }
-
     createBoard();
   </script>
 </body>
